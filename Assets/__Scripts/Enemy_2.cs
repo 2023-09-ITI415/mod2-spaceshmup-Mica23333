@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_2 : Enemy {
+public class Enemy_2 : Enemy
+{
 
     [Header("Set in Inspector: Enemy_2")]
     // Determines how much the sine wave will affect movement
@@ -14,6 +15,8 @@ public class Enemy_2 : Enemy {
     public Vector3 p0;
     public Vector3 p1;
     public float birthTime;
+
+
 
     private void Start()
     {
@@ -35,9 +38,11 @@ public class Enemy_2 : Enemy {
             p0.x *= -1;
             p1.x *= -1;
         }
+        
 
         // Set the birthTime to the current time
         birthTime = Time.time;
+        
     }
 
     public override void Move()
@@ -50,13 +55,13 @@ public class Enemy_2 : Enemy {
         {
             // This Enemy_2 has finished its life
             Destroy(this.gameObject);
-            return;
+
+
+            // Adjust u by adding a U Curve based on a Sine wave
+            u = u + sinEccentricity * (Mathf.Sin(u * Mathf.PI * 2));
+
+            // Interpolate the two linear interpolation points
+            pos = ((1 - u) * p0) + (u * p1);
         }
-
-        // Adjust u by adding a U Curve based on a Sine wave
-        u = u + sinEccentricity * (Mathf.Sin(u * Mathf.PI * 2));
-
-        // Interpolate the two linear interpolation points
-        pos = ((1 - u) * p0) + (u * p1);
     }
 }

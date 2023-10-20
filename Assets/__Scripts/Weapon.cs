@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// This is an enum of the various possible weapon types.
 /// It also includes a "shield" type to allow a shield power-up.
@@ -34,7 +35,7 @@ public class WeaponDefinition
     public float damageOnHit = 0; // Amount of damage caused
     public float continuousDamage = 0; // Damage per second (Laser)
     public float delayBetweenShots = 0;
-    public float velocity = 20; // Speed of projectiles
+    public float velocity = 20; // Speed of projectile
 }
 public class Weapon : MonoBehaviour {
     static public Transform PROJECTILE_ANCHOR;
@@ -46,6 +47,7 @@ public class Weapon : MonoBehaviour {
     public GameObject collar;
     public float lastShotTime; // Time last shot was fired
     private Renderer collarRend;
+    
 
     private void Start()
     {
@@ -68,6 +70,8 @@ public class Weapon : MonoBehaviour {
         {
             rootGO.GetComponent<Hero>().fireDelegate += Fire;
         }
+        
+       
     }
 
     public WeaponType type
@@ -133,6 +137,8 @@ public class Weapon : MonoBehaviour {
                 p.rigid.velocity = p.transform.rotation * vel;
                 break;
         }
+        
+
     }
 
     public Projectile MakeProjectile()
@@ -155,4 +161,5 @@ public class Weapon : MonoBehaviour {
         lastShotTime = Time.time;
         return p;
     }
+
 }

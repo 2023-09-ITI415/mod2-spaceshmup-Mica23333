@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+
 
 public class Hero : MonoBehaviour {
     static public Hero S; // Singleton
@@ -14,6 +17,7 @@ public class Hero : MonoBehaviour {
     public GameObject projectilePrefab;
     public float projectileSpeed = 40;
     public Weapon[] weapons;
+   
 
     [Header("Set Dynamically")]
     [SerializeField]
@@ -26,8 +30,9 @@ public class Hero : MonoBehaviour {
     public delegate void WeaponFireDelegate();
     // Create a WeaponFireDelegate field named fireDelegate.
     public WeaponFireDelegate fireDelegate;
+    public TextMeshProUGUI scoreGT;
 
-	void Start()
+    void Start()
     {
         if (S == null)
         {
@@ -42,10 +47,13 @@ public class Hero : MonoBehaviour {
         // Reset the weapons to start _Hero with 1 blaster
         ClearWeapons();
         weapons[0].SetType(WeaponType.blaster);
+        GameObject scoreGO = GameObject.Find("Score");
+        scoreGT = scoreGO.GetComponent<TextMeshProUGUI>(); // c
+        scoreGT.text = "0";
     }
-	
-	// Update is called once per frame
-	void Update()
+
+    // Update is called once per frame
+    void Update()
     {
         // Pull in information from the Input class
         float xAxis = Input.GetAxis("Horizontal");
@@ -68,12 +76,18 @@ public class Hero : MonoBehaviour {
             fireDelegate();
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
+        other.gameObject.SetActive(false);
+
         Transform rootT = other.gameObject.transform.root;
         GameObject go = rootT.gameObject;
         print("Triggered: " + go.name);
+
+        if (other.gameObject.CompareTag("Hero"))
+        {
+            other.gameObject.SetActive(false);
+        }
 
         // Make sure it's not the same triggering go as last time
         if (go == lastTriggerGo)
@@ -82,7 +96,7 @@ public class Hero : MonoBehaviour {
         }
         lastTriggerGo = go;
 
-        if(go.tag == "Enemy")
+        if (go.tag == "Enemy")
         {
             shieldLevel--;
             Destroy(go);
@@ -92,13 +106,19 @@ public class Hero : MonoBehaviour {
             // If the shield was triggered by a PowerUp
             AbsorbPowerUp(go);
         }
+        else if (go.tag == "Dropping")
+        {
+            int score = int.Parse(scoreGT.text);
+            score += 1;
+            scoreGT.text = score.ToString();
+        }
         else
         {
             print("Triggered by non-Enemy: " + go.name);
         }
     }
 
-    public void AbsorbPowerUp(GameObject go)
+        public void AbsorbPowerUp(GameObject go)
     {
         PowerUp pu = go.GetComponent<PowerUp>();
         switch (pu.type)
@@ -126,6 +146,14 @@ public class Hero : MonoBehaviour {
                 break;
         }
         pu.AbsorbedBy(gameObject);
+
+        int score = int.Parse(scoreGT.text); // d
+        score += 1;
+        scoreGT.text = score.ToString();
+        if (score > HighScore.score)
+        {
+            HighScore.score = score;
+        }
     }
 
     public float shieldLevel
@@ -141,6 +169,7 @@ public class Hero : MonoBehaviour {
             if (value < 0)
             {
                 Destroy(this.gameObject);
+                
                 // Tell Main.S to restart the game after a delay
                 Main.S.DelayedRestart(gameRestartDelay);
             }

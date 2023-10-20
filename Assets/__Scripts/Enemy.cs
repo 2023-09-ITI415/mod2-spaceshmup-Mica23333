@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class Enemy : MonoBehaviour {
 
     [Header("Set in Inspector: Enemy")]
@@ -10,7 +10,8 @@ public class Enemy : MonoBehaviour {
     public float health = 10;
     public int score = 100; // Points earned for destroying this
     public float showDamageDuration = 0.1f; // # seconds to show damage
-    public float powerUpDropChance = 1f; // Chance to drop a power-up
+    public float powerUpDropChance = 1f; // Chance to drop a power-upc
+
 
     [Header("Set Dynamically: Enemy")]
     public Color[] originalColors;
@@ -18,6 +19,7 @@ public class Enemy : MonoBehaviour {
     public bool showingDamage = false;
     public float damageDoneTime; // Time to stop showing damage
     public bool notifiedOfDestruction = false; // Will be used later
+   
 
     protected BoundsCheck bndCheck;
 
@@ -31,6 +33,7 @@ public class Enemy : MonoBehaviour {
         {
             originalColors[i] = materials[i].color;
         }
+        
     }
 
     // This is a property: A method that acts like a field
@@ -50,7 +53,7 @@ public class Enemy : MonoBehaviour {
     {
         Move();
 
-        if(showingDamage && Time.time > damageDoneTime)
+        if (showingDamage && Time.time > damageDoneTime)
         {
             UnShowDamage();
         }
@@ -60,6 +63,10 @@ public class Enemy : MonoBehaviour {
             // We're off the bottom, so destroy this GameObject
             Destroy(gameObject);
         }
+        if (bndCheck !=null && bndCheck.offDown) 
+        {
+
+        };
     }
 
     public virtual void Move()
@@ -68,6 +75,7 @@ public class Enemy : MonoBehaviour {
         tempPos.y -= speed * Time.deltaTime;
         pos = tempPos;
     }
+
 
     private void OnCollisionEnter(Collision coll)
     {
@@ -97,13 +105,17 @@ public class Enemy : MonoBehaviour {
                     notifiedOfDestruction = true;
                     // Destroy this enemy
                     Destroy(this.gameObject);
+
+                   
                 }
                 Destroy(otherGO);
                 break;
 
-            default:
+
+                default:
                 print("Enemy hit by non-ProjectileHero: " + otherGO.name);
                 break;
+
         }
     }
 

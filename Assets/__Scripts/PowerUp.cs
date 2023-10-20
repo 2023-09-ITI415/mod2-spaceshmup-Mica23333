@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PowerUp : MonoBehaviour {
 
@@ -12,12 +13,14 @@ public class PowerUp : MonoBehaviour {
     public float lifeTime = 6f; // Seconds the PowerUp exists
     public float fadeTime = 4f; // Seconds it will then fade
 
+
     [Header("Set Dynamically")]
     public WeaponType type; // The type of the PowerUp 
     public GameObject cube; // Reference to the Cube child
     public TextMesh letter; // Reference to the TextMesh
     public Vector3 rotPerSecond; // Euler rotation speed
     public float birthTime;
+   
 
     private Rigidbody rigid;
     private BoundsCheck bndCheck;
@@ -50,8 +53,8 @@ public class PowerUp : MonoBehaviour {
         rotPerSecond = new Vector3(Random.Range(rotMinMax.x, rotMinMax.y),
             Random.Range(rotMinMax.x, rotMinMax.y),
             Random.Range(rotMinMax.x, rotMinMax.y));
-
         birthTime = Time.time;
+
     }
 
     private void Update()
@@ -89,6 +92,7 @@ public class PowerUp : MonoBehaviour {
             // If the PowerUp has drifted entirely off screen, destroy it
             Destroy(gameObject);
         }
+        
     }
 
     public void SetType(WeaponType wt)
